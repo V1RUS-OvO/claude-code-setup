@@ -1,0 +1,65 @@
+{
+  "autoUpdatesChannel": "latest",
+  "alwaysThinkingEnabled": true,
+  "model": "claude-opus-4-6",
+  "modelOverrides": {
+    "opus": "claude-opus-4-6"
+  },
+  "env": {
+    "ANTHROPIC_BASE_URL": "YOUR_API_PROXY_URL",
+    "ANTHROPIC_AUTH_TOKEN": "YOUR_API_KEY",
+    "ANTHROPIC_MODEL": "claude-opus-4-6",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_ATTRIBUTION_HEADER": "0"
+  },
+  "mcpServers": {
+    "playwright": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["@playwright/mcp@latest"],
+      "env": { "PATH": "C:\\Program Files\\nodejs;%PATH%" }
+    },
+    "context7": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": { "PATH": "C:\\Program Files\\nodejs;%PATH%" }
+    },
+    "memory": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "env": { "PATH": "C:\\Program Files\\nodejs;%PATH%" }
+    },
+    "sequential-thinking": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "env": { "PATH": "C:\\Program Files\\nodejs;%PATH%" }
+    },
+    "filesystem": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "C:\\Users\\YOUR_USERNAME"],
+      "env": { "PATH": "C:\\Program Files\\nodejs;%PATH%" }
+    },
+    "fetch": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "fetch-mcp"],
+      "env": { "PATH": "C:\\Program Files\\nodejs;%PATH%" }
+    },
+    "sqlite": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "mcp-server-sqlite", "--db-path", "C:\\Users\\YOUR_USERNAME\\claude-memory.db"],
+      "env": { "PATH": "C:\\Program Files\\nodejs;%PATH%" }
+    },
+    "duckduckgo": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "duckduckgo-mcp-server"],
+      "env": { "PATH": "C:\\Program Files\\nodejs;%PATH%" }
+    },
+    "github": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "PATH": "C:\\Program Files\\nodejs;%PATH%",
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_PAT"
+      }
+    }
+  }
+}
