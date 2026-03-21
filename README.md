@@ -1,114 +1,142 @@
-# Agent 环境简报 · KAKA 工作站
+# Agent Briefing - KAKA Workstation
 
-> 用于向新 agent 模型快速交接环境配置、可用能力和工作规范。
+> Quick onboarding guide for new agent models. Read this first.
 
 ---
 
-## 一、基础环境
+## 1. Environment
 
-| 项目 | 值 |
-|------|-----|
-| 操作系统 | Windows 11 Pro (22631) |
+| Item | Value |
+|------|-------|
+| OS | Windows 11 Pro (Build 22631) |
 | Shell | Git Bash (MINGW64) |
 | Node.js | v24.14.0 |
 | npm | 11.9.0 |
 | Python | 3.11.9 |
 | Git | 2.50.1 |
 | Docker | 28.3.3 |
-| VS Code | 已安装 |
-| GitHub CLI | 未安装 |
+| VS Code | Installed |
+| GitHub CLI | Not installed |
 
 ---
 
-## 二、Claude Code 配置
+## 2. Claude Code Config
 
-| 项目 | 值 |
-|------|-----|
-| 模型 |  |
-| API 代理 |  |
-| 配置文件 |  |
-| Extended Thinking | 已启用 () |
-| 回复语言 | **中文** |
-
----
-
-## 三、已启用 MCP Servers
-
-| MCP 名称 | 能力 | 关键用途 |
-|----------|------|----------|
-|  | 浏览器自动化 | 网页操作、截图、自动化测试 |
-|  | 实时库文档查询 | 任意库的最新 API 文档 |
-|  | 跨会话持久记忆 | 存储结构化知识实体 |
-|  | 复杂推理链 | 多步骤问题分解 |
-|  | 文件系统访问 | 读写  下任意文件 |
-|  | HTTP 抓取 | 获取网页/API 内容 |
-|  | 本地数据库 | 持久化结构化数据（） |
-|  | 网页搜索 | 实时网络搜索 |
-|  | GitHub API | 搜索仓库、读取文件、管理 PR/Issue |
-
-> **注意**： 内置工具在此环境仅限 Cursor 文档，网络搜索请优先使用  MCP。
+| Item | Value |
+|------|-------|
+| Model | `claude-opus-4-6` |
+| API Proxy | `https://uniquefox.top` |
+| Config file | `C:/Users/KAKA/.claude/settings.json` |
+| Extended Thinking | Enabled (`alwaysThinkingEnabled: true`) |
+| Reply language | **Chinese (Simplified)** |
 
 ---
 
-## 四、自定义 Skills（）
+## 3. MCP Servers
 
-可通过  显式调用，或由 agent 根据上下文自动触发。
+| Name | Capability | Primary Use |
+|------|-----------|-------------|
+| `playwright` | Browser automation | Web interaction, screenshots, E2E tests |
+| `context7` | Live library docs | Latest API docs for any library |
+| `memory` | Persistent memory | Cross-session knowledge entities |
+| `sequential-thinking` | Reasoning chains | Multi-step problem decomposition |
+| `filesystem` | File system access | Read/write files under `C:/Users/KAKA` |
+| `fetch` | HTTP fetch | Scrape web pages / call APIs |
+| `sqlite` | Local database | Persistent structured data (`claude-memory.db`) |
+| `duckduckgo` | Web search | Real-time internet search |
+| `github` | GitHub API | Search repos, read files, manage PRs/Issues |
 
-| Skill | 触发场景 |
-|-------|----------|
-|  | 报错、崩溃、异常行为排查 |
-|  | 代码审查（安全/性能/正确性） |
-|  | 生成测试用例（Jest/Vitest/pytest） |
-|  | 测试驱动开发（Red→Green→Refactor） |
-|  | 安全审计（OWASP Top 10） |
-|  | REST API 设计规范 |
-|  | Dockerfile / Docker Compose 模式 |
-|  | 数据库 schema 变更（零停机） |
-|  | CI/CD 流水线、蓝绿/金丝雀部署 |
-|  | 构建新 MCP 服务器 |
-|  | 代码重构（不改行为） |
-|  | 性能瓶颈诊断与优化 |
-|  | 解释代码/架构/算法 |
-|  | Git 提交规范、分支策略、冲突解决 |
-|  | 新项目脚手架（Next.js/Express/FastAPI/CLI/MCP） |
-|  | 查询任意库的最新官方文档 |
-|  | Pull Request 审查 |
-|  | 多源深度研究，输出带引用报告 |
+> **Note**: Built-in `WebSearch` tool only searches Cursor docs in this environment.
+> Use `duckduckgo` MCP for general web search. GitHub PAT is pre-configured.
 
 ---
 
-## 五、工作规范
+## 4. Custom Skills (`~/.claude/skills/`)
 
-1. **语言**：始终用中文回复，代码保持原语言
-2. **文件操作**：修改前必须先读文件
-3. **Git**：commit message 用中文，不自动 push
-4. **简洁优先**：直接给答案/代码，减少废话
-5. **最小改动**：不引入未被要求的功能、重构、依赖
-6. **安全**：不暴露 secrets，注意 OWASP Top 10
-7. **文档查询**：需要库文档时，优先用  MCP（加  指令）
-8. **GitHub 访问**：直接用  MCP 或 
+Invoke explicitly with `/skill-name` or auto-triggered by context.
 
----
-
-## 六、记忆系统
-
-| 系统 | 路径/说明 |
-|------|----------|
-| 自动记忆 | （每次对话自动加载） |
-| MCP memory | 跨会话实体存储（结构化知识图谱） |
-| SQLite | （持久化结构化数据） |
-| 知识库 | 、、 |
-
----
-
-## 七、Skills 安装方法
-
-所有 skill 文件存放于 ，格式为带 frontmatter 的 Markdown：
-
-
-
-参考来源：[everything-claude-code](https://github.com/affaan-m/everything-claude-code) · [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) · [antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills)
+| Skill | Trigger Scenario |
+|-------|------------------|
+| `/debug` | Errors, crashes, unexpected behavior |
+| `/review` | Code review (security / performance / correctness) |
+| `/test` | Generate tests (Jest / Vitest / pytest) |
+| `/tdd` | Test-driven development (Red-Green-Refactor) |
+| `/security-audit` | Security audit (OWASP Top 10) |
+| `/api-design` | REST API design patterns |
+| `/docker` | Dockerfile / Docker Compose patterns |
+| `/db-migration` | Zero-downtime schema changes |
+| `/deploy` | CI/CD pipelines, blue-green / canary deploy |
+| `/mcp-builder` | Build new MCP servers |
+| `/refactor` | Code refactoring (behavior-preserving) |
+| `/perf` | Performance bottleneck diagnosis |
+| `/explain` | Explain code / architecture / algorithms |
+| `/git-workflow` | Conventional commits, branching, conflict resolution |
+| `/scaffold` | New project scaffold (Next.js / Express / FastAPI / CLI / MCP) |
+| `/context7-lookup` | Query latest official docs for any library |
+| `/pr-review` | Pull request review |
+| `/deep-research` | Multi-source research with citations |
 
 ---
 
-*生成时间: 2026-03-21 | 模型: claude-opus-4-6*
+## 5. Working Rules
+
+1. **Language**: Always reply in Chinese; keep code in its original language
+2. **File ops**: Always read a file before modifying it
+3. **Git**: Commit messages in Chinese; never auto-push
+4. **Concise**: Lead with answer/code, skip preamble
+5. **Minimal changes**: Don't add unrequested features, refactors, or dependencies
+6. **Security**: Never expose secrets; follow OWASP Top 10
+7. **Docs**: For library docs, use `context7` MCP (add `use context7` to prompt)
+8. **GitHub**: Use `github` MCP or `curl + GitHub API` directly (PAT pre-configured)
+
+---
+
+## 6. Memory Systems
+
+| System | Path / Notes |
+|--------|--------------|
+| Auto memory | `C:/Users/KAKA/.claude/projects/.../memory/MEMORY.md` (auto-loaded each session) |
+| MCP memory | Cross-session entity store (knowledge graph) |
+| SQLite | `C:/Users/KAKA/claude-memory.db` (structured persistent data) |
+| Knowledge files | `memory/mcp-servers.md`, `memory/claude-code-skills.md`, `memory/top-starred-projects.md` |
+
+---
+
+## 7. Skill File Format
+
+All skills live in `~/.claude/skills/` as Markdown with YAML frontmatter:
+
+```markdown
+---
+name: skill-name
+description: When to trigger (agent uses this to determine relevance)
+argument-hint: [optional param hint]
+allowed-tools: Read, Write, Bash
+---
+
+# Skill content...
+```
+
+Sources: [everything-claude-code](https://github.com/affaan-m/everything-claude-code) · [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) · [antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills)
+
+---
+
+## 8. Next Improvement Plan
+
+### Round 2 Roadmap
+
+| Priority | Item | Description |
+|----------|------|-------------|
+| P0 | Add skill files to repo | Upload all 18 `~/.claude/skills/*.md` files to `skills/` folder |
+| P0 | Add `settings.json` template | Sanitized config template (no secrets) for quick replication |
+| P1 | CLAUDE.md global template | Global instructions file at `~/.claude/CLAUDE.md` |
+| P1 | Hooks setup guide | Pre/post tool hooks for automated behaviors |
+| P1 | Add more domain skills | Frontend (React/Vue), data science, infra-as-code (Terraform) |
+| P2 | MCP server configs | Example configs for each MCP with setup instructions |
+| P2 | Troubleshooting guide | Common issues: proxy errors, MCP failures, encoding problems |
+| P2 | Agent orchestration skill | Multi-agent coordination patterns |
+| P3 | Auto-sync script | Script to sync local skills dir to this repo |
+
+---
+
+*Generated: 2026-03-21 | Model: claude-opus-4-6*
