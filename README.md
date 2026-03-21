@@ -1,6 +1,53 @@
-# Agent Briefing - KAKA Workstation
+# claude-code-setup
 
-> Quick onboarding guide for new agent models. Read this first.
+> **Private configuration repository for KAKA's Claude Code environment.**
+> New agents: read this file top-to-bottom before doing anything else.
+
+---
+
+## Repository Structure
+
+```
+claude-code-setup/
+├── README.md                    # This file — agent onboarding
+├── config/
+│   ├── settings.template.json   # Claude Code settings (secrets removed)
+│   └── CLAUDE.md                # Global agent instructions template
+├── skills/                      # 18 custom skills for ~/.claude/skills/
+│   ├── debug.md
+│   ├── review.md
+│   ├── security-audit.md
+│   └── ... (18 total)
+├── memory/
+│   ├── MEMORY.md                # Auto-loaded memory (project context)
+│   ├── mcp-servers.md           # Full MCP server reference
+│   ├── claude-code-skills.md    # Skills & hooks reference
+│   └── top-starred-projects.md  # High-value GitHub projects for AI coding
+└── docs/
+    ├── mcp-setup.md             # How to configure each MCP
+    ├── skills-guide.md          # How skills work & how to write new ones
+    └── troubleshooting.md       # Common issues & fixes
+```
+
+---
+
+## Quick Start (New Machine Setup)
+
+```bash
+# 1. Clone this repo
+git clone https://github.com/V1RUS-OvO/claude-code-setup.git
+
+# 2. Copy skills
+mkdir -p ~/.claude/skills
+cp claude-code-setup/skills/*.md ~/.claude/skills/
+
+# 3. Copy settings template and fill in your secrets
+cp claude-code-setup/config/settings.template.json ~/.claude/settings.json
+# Edit: add your ANTHROPIC_AUTH_TOKEN, GITHUB_PERSONAL_ACCESS_TOKEN
+
+# 4. Copy global CLAUDE.md
+cp claude-code-setup/config/CLAUDE.md ~/.claude/CLAUDE.md
+```
 
 ---
 
@@ -16,7 +63,7 @@
 | Git | 2.50.1 |
 | Docker | 28.3.3 |
 | VS Code | Installed |
-| GitHub CLI | Not installed |
+| GitHub CLI | Not installed (use `github` MCP instead) |
 
 ---
 
@@ -29,114 +76,134 @@
 | Config file | `C:/Users/KAKA/.claude/settings.json` |
 | Extended Thinking | Enabled (`alwaysThinkingEnabled: true`) |
 | Reply language | **Chinese (Simplified)** |
+| Skills dir | `C:/Users/KAKA/.claude/skills/` |
+| Memory file | `C:/Users/KAKA/.claude/projects/.../memory/MEMORY.md` |
+
+See `config/settings.template.json` for the full config structure.
 
 ---
 
-## 3. MCP Servers
+## 3. MCP Servers (9 active)
 
-| Name | Capability | Primary Use |
-|------|-----------|-------------|
-| `playwright` | Browser automation | Web interaction, screenshots, E2E tests |
-| `context7` | Live library docs | Latest API docs for any library |
-| `memory` | Persistent memory | Cross-session knowledge entities |
-| `sequential-thinking` | Reasoning chains | Multi-step problem decomposition |
-| `filesystem` | File system access | Read/write files under `C:/Users/KAKA` |
-| `fetch` | HTTP fetch | Scrape web pages / call APIs |
-| `sqlite` | Local database | Persistent structured data (`claude-memory.db`) |
-| `duckduckgo` | Web search | Real-time internet search |
-| `github` | GitHub API | Search repos, read files, manage PRs/Issues |
+| Name | Package | Capability | Key Use |
+|------|---------|-----------|----------|
+| `playwright` | `@playwright/mcp` | Browser automation | Web interaction, screenshots, E2E tests |
+| `context7` | `@upstash/context7-mcp` | Live library docs | Latest API docs for any library |
+| `memory` | `@modelcontextprotocol/server-memory` | Persistent memory | Cross-session knowledge graph |
+| `sequential-thinking` | `@modelcontextprotocol/server-sequential-thinking` | Reasoning chains | Multi-step problem decomposition |
+| `filesystem` | `@modelcontextprotocol/server-filesystem` | File system | Read/write `C:/Users/KAKA` |
+| `fetch` | `fetch-mcp` | HTTP fetch | Scrape pages / call APIs |
+| `sqlite` | `mcp-server-sqlite` | Local DB | Persistent structured data |
+| `duckduckgo` | `duckduckgo-mcp-server` | Web search | Real-time internet search |
+| `github` | `@modelcontextprotocol/server-github` | GitHub API | Repos, files, PRs, Issues |
 
-> **Note**: Built-in `WebSearch` tool only searches Cursor docs in this environment.
-> Use `duckduckgo` MCP for general web search. GitHub PAT is pre-configured.
+**Critical notes:**
+- Built-in `WebSearch` tool only searches Cursor docs — use `duckduckgo` MCP for real web search
+- `github` MCP has PAT configured — use it instead of `gh` CLI
+- GitHub API also accessible via `curl` with the PAT in settings.json
+- `context7`: add `use context7` to any prompt to query live library docs
+
+See `docs/mcp-setup.md` for installation and configuration details.
 
 ---
 
-## 4. Custom Skills (`~/.claude/skills/`)
+## 4. Custom Skills (18 total)
 
-Invoke explicitly with `/skill-name` or auto-triggered by context.
+Location: `~/.claude/skills/` | Source: `skills/` in this repo
 
-| Skill | Trigger Scenario |
-|-------|------------------|
-| `/debug` | Errors, crashes, unexpected behavior |
-| `/review` | Code review (security / performance / correctness) |
-| `/test` | Generate tests (Jest / Vitest / pytest) |
-| `/tdd` | Test-driven development (Red-Green-Refactor) |
-| `/security-audit` | Security audit (OWASP Top 10) |
-| `/api-design` | REST API design patterns |
-| `/docker` | Dockerfile / Docker Compose patterns |
-| `/db-migration` | Zero-downtime schema changes |
-| `/deploy` | CI/CD pipelines, blue-green / canary deploy |
-| `/mcp-builder` | Build new MCP servers |
-| `/refactor` | Code refactoring (behavior-preserving) |
-| `/perf` | Performance bottleneck diagnosis |
-| `/explain` | Explain code / architecture / algorithms |
-| `/git-workflow` | Conventional commits, branching, conflict resolution |
-| `/scaffold` | New project scaffold (Next.js / Express / FastAPI / CLI / MCP) |
-| `/context7-lookup` | Query latest official docs for any library |
-| `/pr-review` | Pull request review |
-| `/deep-research` | Multi-source research with citations |
+Invoke with `/skill-name` or auto-triggered by context matching `description` field.
+
+### Development Workflow
+| Skill | File | Auto-trigger when... |
+|-------|------|----------------------|
+| `/debug` | `debug.md` | Error, crash, unexpected behavior |
+| `/review` | `review.md` | Asked to review/audit code |
+| `/test` | `test.md` | Asked to write tests |
+| `/tdd` | `tdd.md` | Writing new feature (test-first) |
+| `/refactor` | `refactor.md` | Asked to clean up / restructure |
+| `/explain` | `explain.md` | Asked what code does |
+
+### Architecture & Design
+| Skill | File | Auto-trigger when... |
+|-------|------|----------------------|
+| `/api-design` | `api-design.md` | Designing REST endpoints |
+| `/security-audit` | `security-audit.md` | Auth, uploads, payments, secrets |
+| `/db-migration` | `db-migration.md` | Schema changes, ALTER TABLE |
+| `/docker` | `docker.md` | Dockerfile, docker-compose |
+| `/deploy` | `deploy.md` | CI/CD, production release |
+| `/scaffold` | `scaffold.md` | New project / module creation |
+
+### Productivity
+| Skill | File | Auto-trigger when... |
+|-------|------|----------------------|
+| `/git-workflow` | `git-workflow.md` | Commits, branches, conflicts |
+| `/pr-review` | `pr-review.md` | Reviewing a pull request |
+| `/perf` | `perf.md` | Slow app, high resource usage |
+| `/deep-research` | `deep-research.md` | Research, investigate, deep dive |
+| `/context7-lookup` | `context7-lookup.md` | Library API questions |
+| `/mcp-builder` | `mcp-builder.md` | Building MCP servers |
+
+See `docs/skills-guide.md` for how to write new skills.
 
 ---
 
 ## 5. Working Rules
 
-1. **Language**: Always reply in Chinese; keep code in its original language
-2. **File ops**: Always read a file before modifying it
-3. **Git**: Commit messages in Chinese; never auto-push
-4. **Concise**: Lead with answer/code, skip preamble
-5. **Minimal changes**: Don't add unrequested features, refactors, or dependencies
-6. **Security**: Never expose secrets; follow OWASP Top 10
-7. **Docs**: For library docs, use `context7` MCP (add `use context7` to prompt)
-8. **GitHub**: Use `github` MCP or `curl + GitHub API` directly (PAT pre-configured)
+These rules apply to ALL agents working in this environment:
+
+### Communication
+- **Always reply in Chinese** (Simplified); keep code in original language
+- Be concise — lead with answer/code, skip preamble
+- Use `file:line` references when pointing to code locations
+
+### Code Changes
+- Always read a file before modifying it
+- Make minimal changes — don't refactor unrequested code
+- Don't add features, error handling, or abstractions beyond what's asked
+- No docstrings/comments unless logic is non-obvious
+
+### Git
+- Commit messages in Chinese
+- Never auto-push without explicit request
+- Prefer new commits over amending
+
+### Security
+- Never expose or log secrets
+- Follow OWASP Top 10 for all user-facing code
+- Validate at system boundaries (user input, external APIs)
+
+### Tool Priority
+- Library docs → `context7` MCP (`use context7`)
+- Web search → `duckduckgo` MCP
+- GitHub operations → `github` MCP or `curl + GitHub API`
+- File search → `Glob`/`Grep` tools (not `find`/`grep` in bash)
 
 ---
 
 ## 6. Memory Systems
 
-| System | Path / Notes |
-|--------|--------------|
-| Auto memory | `C:/Users/KAKA/.claude/projects/.../memory/MEMORY.md` (auto-loaded each session) |
-| MCP memory | Cross-session entity store (knowledge graph) |
-| SQLite | `C:/Users/KAKA/claude-memory.db` (structured persistent data) |
-| Knowledge files | `memory/mcp-servers.md`, `memory/claude-code-skills.md`, `memory/top-starred-projects.md` |
+| System | Location | Purpose |
+|--------|----------|---------|
+| Auto memory | `~/.claude/projects/.../memory/MEMORY.md` | Auto-loaded each session; key facts & preferences |
+| Knowledge base | `memory/*.md` in this repo | Reference docs (MCP list, skills guide, top projects) |
+| MCP memory | `@modelcontextprotocol/server-memory` | Cross-session entity graph |
+| SQLite | `C:/Users/KAKA/claude-memory.db` | Structured persistent data |
+
+When starting a new session, check `MEMORY.md` for context before proceeding.
 
 ---
 
-## 7. Skill File Format
+## 7. Roadmap
 
-All skills live in `~/.claude/skills/` as Markdown with YAML frontmatter:
-
-```markdown
----
-name: skill-name
-description: When to trigger (agent uses this to determine relevance)
-argument-hint: [optional param hint]
-allowed-tools: Read, Write, Bash
----
-
-# Skill content...
-```
-
-Sources: [everything-claude-code](https://github.com/affaan-m/everything-claude-code) · [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) · [antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills)
+- [x] 18 custom skills uploaded
+- [x] Settings template
+- [x] Global CLAUDE.md
+- [x] Memory knowledge base files
+- [ ] Domain skills: React/Vue, data science, Terraform
+- [ ] Hooks configuration guide
+- [ ] Agent orchestration skill
+- [ ] Auto-sync script (local skills → this repo)
 
 ---
 
-## 8. Next Improvement Plan
-
-### Round 2 Roadmap
-
-| Priority | Item | Description |
-|----------|------|-------------|
-| P0 | Add skill files to repo | Upload all 18 `~/.claude/skills/*.md` files to `skills/` folder |
-| P0 | Add `settings.json` template | Sanitized config template (no secrets) for quick replication |
-| P1 | CLAUDE.md global template | Global instructions file at `~/.claude/CLAUDE.md` |
-| P1 | Hooks setup guide | Pre/post tool hooks for automated behaviors |
-| P1 | Add more domain skills | Frontend (React/Vue), data science, infra-as-code (Terraform) |
-| P2 | MCP server configs | Example configs for each MCP with setup instructions |
-| P2 | Troubleshooting guide | Common issues: proxy errors, MCP failures, encoding problems |
-| P2 | Agent orchestration skill | Multi-agent coordination patterns |
-| P3 | Auto-sync script | Script to sync local skills dir to this repo |
-
----
-
-*Generated: 2026-03-21 | Model: claude-opus-4-6*
+*Last updated: 2026-03-21 | Model: claude-opus-4-6 | Owner: V1RUS-OvO*
