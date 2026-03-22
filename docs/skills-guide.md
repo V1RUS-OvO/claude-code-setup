@@ -42,40 +42,43 @@ description: Diagnose and fix bugs, errors, crashes, or unexpected behavior.
 
 Project skills override global skills with the same name.
 
-## Installed Skills Reference
+## Installed Skills Reference (21 total)
 
-| File | Name | Description Summary |
-|------|------|---------------------|
-| `debug.md` | debug | Diagnose errors and crashes |
-| `review.md` | review | Code review: security, perf, correctness |
-| `test.md` | test | Generate comprehensive test suites |
-| `tdd.md` | tdd | Test-driven development (Red-Green-Refactor) |
-| `security-audit.md` | security-audit | OWASP Top 10 security checklist |
-| `api-design.md` | api-design | REST API design patterns |
-| `docker.md` | docker | Dockerfile and Docker Compose patterns |
-| `db-migration.md` | db-migration | Zero-downtime database schema changes |
-| `deploy.md` | deploy | CI/CD pipelines and deployment strategies |
+| File | Name | Description |
+|------|------|-------------|
+| `debug.md` | debug | Diagnose and fix bugs, errors, crashes |
+| `review.md` | review | Code review: security, performance, correctness |
+| `test.md` | test | Generate unit/integration/e2e tests |
+| `tdd.md` | tdd | Test-driven development (Red→Green→Refactor) |
+| `security-audit.md` | security-audit | OWASP Top 10 security audit |
+| `api-design.md` | api-design | REST API design: URLs, status codes, pagination |
+| `docker.md` | docker | Dockerfile, Compose, multi-stage builds |
+| `db-migration.md` | db-migration | Zero-downtime schema migrations |
+| `deploy.md` | deploy | CI/CD, blue-green, canary deployment |
 | `mcp-builder.md` | mcp-builder | Build MCP servers with TypeScript SDK |
 | `refactor.md` | refactor | Behavior-preserving code refactoring |
-| `perf.md` | perf | Performance bottleneck diagnosis & optimization |
+| `perf.md` | perf | Performance profiling and optimization |
 | `explain.md` | explain | Explain code, architecture, algorithms |
-| `git-workflow.md` | git-workflow | Conventional commits, branching, conflicts |
-| `scaffold.md` | scaffold | New project boilerplate (Next.js/Express/FastAPI/MCP) |
-| `context7-lookup.md` | context7-lookup | Query live library docs via Context7 |
+| `git-workflow.md` | git-workflow | Conventional commits, branching, conflict resolution |
+| `scaffold.md` | scaffold | Project boilerplate: Next.js/Express/FastAPI/CLI/MCP |
+| `context7-lookup.md` | context7-lookup | Query live library docs via Context7 MCP |
 | `pr-review.md` | pr-review | Pull request review checklist |
 | `deep-research.md` | deep-research | Multi-source research with citations |
+| `react.md` | react | React hooks, state management (Zustand/TanStack Query), performance |
+| `vue.md` | vue | Vue 3 Composition API, Pinia, VueUse, Vue Router 4 |
+| `terraform.md` | terraform | IaC: modules, state, AWS/GCP/Docker providers, security |
 
-## Creating a New Skill
+## Adding a New Skill
 
-1. Create `~/.claude/skills/my-skill.md`
-2. Add frontmatter with a precise `description`
-3. Write clear, actionable instructions
-4. Test by describing the trigger scenario in a prompt
-5. Add to this repo: copy to `skills/my-skill.md` and commit
+1. Create `~/.claude/skills/your-skill.md`
+2. Add YAML frontmatter with `name`, `description`, `allowed-tools`
+3. Write the skill body (instructions, patterns, examples)
+4. Upload to `claude-code-setup/skills/` to persist across machines
+5. Update `MEMORY.md` skill count
 
 ## Tips
 
-- Keep each skill focused on one domain
-- Reference available MCP tools in the skill if relevant
-- Use concrete examples and checklists over prose
-- Skills sourced from: [everything-claude-code](https://github.com/affaan-m/everything-claude-code), [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code)
+- Keep `description` under 2 sentences — it's used for matching, not documentation
+- Use `allowed-tools` to restrict what the skill can do (security/scope control)
+- Skills with `disable-model-invocation: true` only run on explicit `/skill-name` calls
+- Test auto-trigger by describing the problem in natural language without naming the skill
