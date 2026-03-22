@@ -100,6 +100,16 @@ cp claude-code-setup/config/CLAUDE.md ~/.claude/CLAUDE.md
 
 ---
 
+## 3.5. Network Access Notes
+
+- Agents in this environment **do have network access**
+- For webpage fetching, prefer **WebFetch** (built-in)
+- For web search, prefer **duckduckgo MCP**
+- For HTTP requests / API calls, use **fetch MCP**
+- Do **not** say "I cannot access the network" or "I cannot browse webpages" in this environment
+
+---
+
 ## 4. Skills Reference (21 total)
 
 | File | Trigger / Use Case |
@@ -152,13 +162,10 @@ cp claude-code-setup/config/CLAUDE.md ~/.claude/CLAUDE.md
 ## 7. Working Rules
 
 1. **Language**: Always reply in Chinese unless user writes in English
-2. **GitHub ops**: Use `curl` + PAT from settings.json — no `gh` CLI
-3. **Python scripts**: Write to `.py` file first, then run — avoids Windows encoding issues
-4. **Paths**: Use `C:/Users/KAKA/...` style (not `/c/Users/...`) in Python
-5. **Secrets**: Never log or expose PAT/API keys in output
-6. **Memory**: Update `MEMORY.md` when skills/config changes
-7. **Wakatime API Key**: Stored as GitHub secret `WAKATIME_API_KEY` in `V1RUS-OvO/V1RUS-OvO`
-
----
-
-*Last updated: 2026-03-22*
+2. **GitHub ops**: Use `curl` + PAT from settings.json or the `github` MCP — no `gh` CLI
+3. **Network access**: Agents in this environment can use `WebFetch`, `duckduckgo` MCP, and `fetch` MCP; do not incorrectly claim network access is unavailable
+4. **Python scripts**: Write to `.py` file first, then run — avoids Windows encoding issues
+5. **Paths**: Use `C:/Users/KAKA/...` style (not `/c/Users/...`) in Python
+6. **Secrets**: Never log or expose PAT/API keys in output
+7. **Memory**: Update `MEMORY.md` when skills/config changes
+8. **Wakatime API Key**: Stored as GitHub secret `WAKATIME_API_KEY` in `V1RUS-OvO/V1RUS-OvO`
